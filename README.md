@@ -48,4 +48,5 @@ docker compose exec db psql -U postgres -d tobd -c "select count(*) from analyti
 - Архитектура: `docs/ARCHITECTURE.md`.
 
 ### Авторы
-- Страченков Артём, Мищенко Александр.
+- Страченков Артём
+- Мищенко Александр.
