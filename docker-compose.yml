@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: tobd-postgres
+    environment:
+      POSTGRES_DB: tobd
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5434:5432"      # снаружи 5433, внутри сети 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: tobd-grafana
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana   # сохраняем дашборды/настройки
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: tobd-app
+    depends_on:
+      - db
+    env_file:
+      - .env        # используем твой .env
+    working_dir: /app
+    command: ["sh", "-c", "python -m src.db.init_db && tail -f /dev/null"]
+    # если тебе нужно больше RAM/CPU для Dask — тут можно лимиты настроить
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  grafana_data:

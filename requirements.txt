@@ -1,0 +1,6 @@
+prefect>=2.0.0
+dask[complete]
+psycopg2-binary
+sqlalchemy
+python-dotenv>=1.0.0
+requests
